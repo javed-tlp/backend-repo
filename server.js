@@ -15,6 +15,11 @@ app.use(cors({
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 
+// Define a default route
+app.get('/', (req, res) => {
+    res.send('Welcome to the API!');
+});
+
 // Serve API routes
 app.use('/send-email', contactRoutes);
 
