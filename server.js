@@ -1,7 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
-const cors = require('cors'); // Add this import
+const cors = require('cors');
 const contactRoutes = require('./routes/contactRoutes');
 require('dotenv').config();
 
@@ -30,5 +30,7 @@ app.get('/', (req, res) => {
 // Use routes for handling form submission
 app.use('/send-email', contactRoutes);
 
-// Export the handler function for Vercel
-module.exports = app;
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Server is running on http://localhost:${PORT}`);
+});
