@@ -12,15 +12,20 @@ const PORT = process.env.PORT || 3000;
 app.use(cors({
     origin: 'https://main--strong-raindrop-c0e6b5.netlify.app/'  // Replace with your actual frontend URL
 }));
+
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 
-// Serve static files from the root directory
-app.use(express.static(path.join(__dirname)));
+// Log server configuration details
+console.log('Server configuration:', {
+    port: PORT,
+    corsOrigin: 'https://main--strong-raindrop-c0e6b5.netlify.app/'  // CORS origin for debugging
+});
 
-// Define a default route for the root URL
+// Redirect root requests to Netlify frontend
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html')); // Serve index.html from the root
+    console.log('Redirecting root request to Netlify frontend');
+    res.redirect('https://main--strong-raindrop-c0e6b5.netlify.app/'); // Redirect to your Netlify URL
 });
 
 // Serve API routes
