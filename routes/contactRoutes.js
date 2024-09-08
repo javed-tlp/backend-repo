@@ -1,27 +1,36 @@
 const express = require('express');
 const router = express.Router();
-const transporter = require('../config/mailConfig');
+const nodemailer = require('nodemailer');
+require('dotenv').config(); // Ensure dotenv is configured
 
-router.post('/', (req, res) => {
-    const { name, email, message } = req.body;
+// Create a transport instance with your email provider settings using .env variables
+const transporter = nodemailer.createTransport({
+    service: 'gmail', // or your email service
+    auth: {
+        user: process.env.EMAIL_USER, // Use the .env variable for email
+        pass: process.env.EMAIL_PASS  // Use the .env variable for password
+    }
+});
 
-    const mailOptions = {
-        from: email,
-        to: process.env.EMAIL_USER,
-        replyTo: email,
-        subject: `Contact Form Submission from ${name}`,
-        text: `Message from ${name} (${email}):\n\n${message}`
-    };
+// POST route for sending emails
+router.post('/', async (req, res) => {
+    const { to, subject, text } = req.body;  // Extract data from the request body
 
-    transporter.sendMail(mailOptions, (error, info) => {
-        if (error) {
-            console.error('Error sending email:', error.message);
-            return res.status(500).send('Error sending email. Please try again.');
-        } else {
-            console.log('Email sent successfully: ' + info.response);
-            return res.status(200).render('thankyou', { name });
-        }
-    });
+    try {
+        // Send the email using the transporter
+        await transporter.sendMail({
+            from: process.env.EMAIL_USER, // Use the .env variable for the sender's email
+            to,
+            subject,
+            text
+        });
+        // Send success response
+        res.status(200).send('Email sent successfully'); // Ensure this is a string
+    } catch (error) {
+        // Log and send error response
+        console.error('Error sending email:', error);
+        res.status(500).send('Failed to send email'); // Ensure this is a string
+    }
 });
 
 module.exports = router;
