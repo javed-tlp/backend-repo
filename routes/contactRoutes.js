@@ -21,7 +21,7 @@ router.post('/', async (req, res) => {
     // Set up mail options
     const mailOptions = {
         from: email,
-        to: process.env.EMAIL_USER, // Recipient email address
+        to: 'saifijaved616@gmail.com', // Recipient email address
         replyTo: email,
         subject: `Contact Form Submission from ${name}`,
         text: `Message from ${name} (${email}):\n\n${message}`
