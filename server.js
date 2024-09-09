@@ -15,13 +15,20 @@ app.use(cors({
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 
+// Log CORS setup
+console.log('CORS setup with origin:', 'https://main--strong-raindrop-c0e6b5.netlify.app/');
+
 // Redirect root requests to Netlify frontend
 app.get('/', (req, res) => {
+    console.log('Received request for root URL, redirecting to Netlify frontend');
     res.redirect('https://main--strong-raindrop-c0e6b5.netlify.app/'); // Redirect to your Netlify URL
 });
 
 // Serve API routes
-app.use('/send-email', contactRoutes);
+app.use('/send-email', (req, res, next) => {
+    console.log('Handling /send-email route');
+    next(); // Pass control to the next middleware (contactRoutes)
+}, contactRoutes);
 
 // Start the server
 app.listen(PORT, () => {
