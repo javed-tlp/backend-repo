@@ -1,3 +1,4 @@
+// routes/contactRoutes.js
 const express = require('express');
 const router = express.Router();
 const transporter = require('../config/mailConfig');
@@ -21,7 +22,7 @@ router.post('/', async (req, res) => {
     // Set up mail options
     const mailOptions = {
         from: email,
-        to: 'saifijaved616@gmail.com', // Recipient email address
+        to: process.env.EMAIL_USER, // Recipient email address from environment variable
         replyTo: email,
         subject: `Contact Form Submission from ${name}`,
         text: `Message from ${name} (${email}):\n\n${message}`
