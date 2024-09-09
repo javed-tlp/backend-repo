@@ -8,10 +8,15 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
+// Middleware for serving static files from 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
+
+// CORS setup
 app.use(cors({
     origin: 'https://main--strong-raindrop-c0e6b5.netlify.app/'  // Replace with your actual frontend URL
 }));
+
+// Body parser middleware
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
 
