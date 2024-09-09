@@ -1,37 +1,34 @@
 const express = require('express');
-const path = require('path');
-const bodyParser = require('body-parser');
-const cors = require('cors');
-const contactRoutes = require('./routes/contactRoutes');
-require('dotenv').config();
-
 const app = express();
-const PORT = process.env.PORT || 3000;
+const cors = require('cors');
 
 // Middleware
-app.use(cors({
-    origin: 'https://main--strong-raindrop-c0e6b5.netlify.app/'  // Replace with your actual frontend URL
-}));
-
-app.use(bodyParser.urlencoded({ extended: false }));
 app.use(express.json());
+app.use(cors()); // Allow CORS from all origins, or configure specific origins as needed
 
-// Log server configuration details
-console.log('Server configuration:', {
-    port: PORT,
-    corsOrigin: 'https://main--strong-raindrop-c0e6b5.netlify.app/'  // CORS origin for debugging
-});
-
-// Redirect root requests to Netlify frontend
+// Root route to redirect to Netlify frontend
 app.get('/', (req, res) => {
     console.log('Redirecting root request to Netlify frontend');
     res.redirect('https://main--strong-raindrop-c0e6b5.netlify.app/'); // Redirect to your Netlify URL
 });
 
-// Serve API routes
-app.use('/send-email', contactRoutes);
+// Send email route
+app.post('/send-email', (req, res) => {
+    const { name, email, message } = req.body;
+
+    // Implement your email sending logic here (e.g., using Nodemailer or another service)
+
+    // If the email sending is successful, send a success response
+    res.status(200).json({ message: 'Email sent successfully!' });
+});
+
+// Handle invalid routes
+app.use((req, res) => {
+    res.status(404).send('Route not found');
+});
 
 // Start the server
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
-    console.log(`Server is running on http://localhost:${PORT}`);
+    console.log(`Server is running on port ${PORT}`);
 });
