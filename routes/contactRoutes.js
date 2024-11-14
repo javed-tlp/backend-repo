@@ -18,6 +18,13 @@ router.post('/', async (req, res) => {
         return res.status(400).send('Missing required fields: name, email, or message');
     }
 
+    // Email format validation
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+        console.warn('Validation failed: Invalid email format');
+        return res.status(400).send('Please enter a valid email address');
+    }
+
     // Set up mail options for Javed's email
     const mailOptionsToJaved = {
         from: process.env.EMAIL_USER,
@@ -48,11 +55,18 @@ router.post('/', async (req, res) => {
         return res.status(200).send('Emails sent successfully');
     } catch (error) {
         console.error('Error sending email:', error.message);
-        return res.status(500).send('Error sending email. Please try again.');
+
+        // Check for domain not found error
+        if (error.message.includes("domain") && error.message.includes("couldn't be found")) {
+            return res.status(400).send("Invalid email domain. Please check for typos and try again.");
+        } else {
+            return res.status(500).send('Error sending email. Please try again.');
+        }
     }
 });
 
 module.exports = router;
+
 
 
 
