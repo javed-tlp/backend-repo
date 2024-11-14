@@ -36,21 +36,24 @@ router.post('/', async (req, res) => {
     };
 
     try {
-        // Send email to Javed
-        const infoToJaved = await transporter.sendMail(mailOptionsToJaved);
+        // Send both emails in parallel
+        const [infoToJaved, infoThankYou] = await Promise.all([
+            transporter.sendMail(mailOptionsToJaved),
+            transporter.sendMail(thankYouMailOptions)
+        ]);
+
         console.log('Email sent to Javed successfully:', infoToJaved.response);
-    
-        // Send thank-you email to the user
-        const infoThankYou = await transporter.sendMail(thankYouMailOptions);
         console.log('Thank-you email sent to user successfully:', infoThankYou.response);
+
+        return res.status(200).send('Emails sent successfully');
     } catch (error) {
-        console.error('Error sending thank-you email:', error.message);
+        console.error('Error sending email:', error.message);
         return res.status(500).send('Error sending email. Please try again.');
     }
-    
 });
 
 module.exports = router;
+
 
 
 // when you want to send the details of contact from to other mail ID
